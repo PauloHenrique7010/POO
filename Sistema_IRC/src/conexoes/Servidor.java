@@ -13,7 +13,7 @@ public class Servidor extends Thread {
 		nomeClientes = new Vector();
 		try {
 			// criando um socket que fica escutando a porta 2222.
-			ServerSocket s = new ServerSocket(1236);
+			ServerSocket s = new ServerSocket(2227);
 			// Loop principal.
 			while (true) {
 				// aguarda algum cliente se conectar. A execução do
@@ -21,7 +21,7 @@ public class Servidor extends Thread {
 				// classe ServerSocket. Quando algum cliente se conectar
 				// ao servidor, o método desbloqueia e retorna com um
 				// objeto da classe Socket, que é porta da comunicação.
-				System.out.print("Esperando alguem se conectar...");
+				System.out.print("Esperando alguem se conectar...\n");
 				Socket conexao = s.accept();
 				InetAddress address = conexao.getInetAddress();
 				int portinha = conexao.getPort();
@@ -53,16 +53,25 @@ public class Servidor extends Thread {
 	public Servidor(Socket s) {
 		conexao = s;
 	}
-	
-	public static String Anonimo() {
-		 String anon="anon";
-         Random generator = new Random(); 
-         int i = generator.nextInt(999) + 1;
-         String is=String.valueOf(i);
-         anon=anon.concat(is);
-         return anon;         		
+		
+	public static String formaMsgSemArroba(String linha) {
+		int cont = 0;
+		String msgPronta = "";
+		String valores = linha;
+		String outr = null;
+        String[] arrayValores = valores.split(" ");
+        for (String s: arrayValores) {
+            if (cont == 1) 
+            	msgPronta = s;
+            else if(cont >1) {
+            	msgPronta+=" "+s;
+            }
+            cont+=1;
+            
+        	
+        }
+        return msgPronta;
 	}
-	
 	public static String SeparaUsuario(String linha) {
 		//@lrsonne oi
 		String valores = linha;
@@ -97,9 +106,6 @@ public class Servidor extends Thread {
 			if (meuNome == null) {
 				return;
 			}
-			else if(meuNome == ".") {
-				meuNome = Anonimo();
-			}
 			// Uma vez que se tem um cliente conectado e conhecido,
 			// coloca-se fluxo de saída para esse cliente no vetor de
 			// clientes conectados.
@@ -120,21 +126,15 @@ public class Servidor extends Thread {
 			while (linha != null && !(linha.trim().equals(""))) {
 				// reenvia a linha para todos os clientes conectados
 				if (SeparaUsuario(linha) != ""){
-					System.out.println("ele entrou no privado");
-					sendPrivate(saida, " disse: ", linha);
+					sendPrivate(saida, " PV: ", linha);
 					// espera por uma nova linha.
 					linha = entrada.readLine();						
 				}
 				else {
-					System.out.println("ele entrou no broadcast");
 					sendToAll(saida, " disse: ", linha);
 					// espera por uma nova linha.
 					linha = entrada.readLine();
 				}
-				
-				
-
-
 			}
 			// Uma vez que o cliente enviou linha em branco, retira-se
 			// fluxo de saída do vetor de clientes e fecha-se conexão.
@@ -152,19 +152,21 @@ public class Servidor extends Thread {
 		Enumeration e = clientes.elements();
 		Enumeration n = nomeClientes.elements();
 		String privado = "";
+		String pess = "";
 		int contador = 0;
 		
 		while (e.hasMoreElements()) {
 			// obtém o fluxo de saída de um dos clientes
 			PrintStream chat = (PrintStream) e.nextElement();
-			System.out.println("Pessoas conectadas: "+n);
 			privado = SeparaUsuario(linha);
-			System.out.println("Quer falar com: "+privado);
-			System.out.println("Vetor tem o: "+nomeClientes.get(contador));			
+			String msgPrivada = "";
+			
+			pess = (String) nomeClientes.get(contador);	
 			contador +=1;			
 			
-			if (nomeClientes.get(contador) == privado) {
-				chat.println(meuNome + acao + linha);
+			if (pess.trim().equals((String) privado.trim())) {
+				msgPrivada = formaMsgSemArroba(linha);
+				chat.println(meuNome + acao + msgPrivada);
 				break;
 			}
 		}
@@ -179,7 +181,7 @@ public class Servidor extends Thread {
 			
 			// envia para todos, menos para o próprio usuário
 			if (chat != saida) {
-				chat.println("GO"+meuNome + acao + linha);
+				chat.println(meuNome + acao + linha);
 			}
 		}
 	}

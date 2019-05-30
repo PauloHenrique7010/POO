@@ -2,6 +2,7 @@ package conexoes;
 
 import java.io.*;
 import java.net.*;
+import java.util.Random;
 
 import javax.swing.JOptionPane;
 
@@ -19,7 +20,8 @@ public class Cliente extends Thread {
 			// da aplica��o ServidorDeChat. Nada impede a mudan�a
 			// desses valores, tentando estabelecer uma conex�o com
 			// outras portas em outras m�quinas.
-			Socket conexao = new Socket("127.0.0.1",1236);
+			//Socket conexao = new Socket("127.0.0.1",1238);
+			Socket conexao = new Socket("127.0.0.1",2227);
 
 			// uma vez estabelecida a comunica��o, deve-se obter os
 			// objetos que permitem controlar o fluxo de comunica��o
@@ -28,6 +30,8 @@ public class Cliente extends Thread {
 			BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
 			System.out.print("Entre com o seu nome: ");
 			String meuNome = teclado.readLine();
+			if (meuNome.equals("."))
+				meuNome = Anonimo();
 			saida.println(meuNome);
 
 			// Uma vez que tudo est� pronto, antes de iniciar o loop
@@ -56,6 +60,15 @@ public class Cliente extends Thread {
 			// Caso ocorra alguma excess�o de E/S, mostre qual foi.
 			System.out.println("IOException: " + e);
 		}
+	}
+	
+	public static String Anonimo() {
+		 String anon="anon";
+        Random generator = new Random(); 
+        int i = generator.nextInt(999) + 1;
+        String is=String.valueOf(i);
+        anon=anon.concat(is);
+        return anon;         		
 	}
 
 	// parte que controla a recep��o de mensagens deste cliente
@@ -95,20 +108,20 @@ public class Cliente extends Thread {
 	      // Variavel com tamanho do texto a ser decriptado
 	      int tamanhoTexto = textoCifrado.length();
 	      
-	      // Descriptografa cada caracter por vez
+	      // Deografa cada caracter por vez
 	      for(int c=0; c < tamanhoTexto; c++){
-	         // Transforma o caracter em codigo ASCII e faz a descriptografia
+	         // Transforma o caracter em codigo ASCII e faz a deografia
 	         int letraDecifradaASCII = ((int) textoCifrado.charAt(c)) - chave;
 	         
 	         // Verifica se o codigo ASCII esta no limite dos caracteres imprimiveis
 	         while(letraDecifradaASCII < 32)
 	            letraDecifradaASCII += 94;
 
-	         // Transforma codigo ASCII descriptografado em caracter ao novo texto
+	         // Transforma codigo ASCII deografado em caracter ao novo texto
 	         texto.append( (char)letraDecifradaASCII );
 	      }
 	      
-	      // Por fim retorna a mensagem descriptografada por completo
+	      // Por fim retorna a mensagem deografada por completo
 	      return texto.toString();
 	   }
 	      
