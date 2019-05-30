@@ -1,3 +1,12 @@
+/*
+ * SISTEMA IRC
+ * GRUPO: LUCAS RIBEIRO, GABRIEL BRITO, PAULO HENRIQUE
+ * 3º ADS - B
+ * PROFESSOR: GERSON DA PENHA
+ * MATÉRIA: PROGRAMAÇÃO ORIENTADA A OBJETO 2019
+ */
+
+
 package conexoes;
 
 import java.io.*;
@@ -59,36 +68,44 @@ public class Servidor extends Thread {
 		String msgPronta = "";
 		String valores = linha;
 		String outr = null;
+		char k = '@';
+		String retorno =null;
         String[] arrayValores = valores.split(" ");
         for (String s: arrayValores) {
-            if (cont == 1) 
-            	msgPronta = s;
-            else if(cont >1) {
-            	msgPronta+=" "+s;
+        	outr = s; //@lrsonne 
+            if (outr.charAt(0) == k) {
+            	retorno = (outr.substring(1, outr.length()));
+            	break;
+            }
+            else {
+            	retorno = "";
             }
             cont+=1;
             
         	
         }
-        return msgPronta;
+        return retorno;
 	}
 	public static String SeparaUsuario(String linha) {
 		//@lrsonne oi
 		String valores = linha;
 		String outr = null;
+		String retorno = null;
+		char k = '@';
         String[] arrayValores = valores.split(" ");
         for (String s: arrayValores) {
-            outr = s; //@lrsonne
-            break;
+            outr = s; //@lrsonne 
+            if (outr.charAt(0) == k) {
+            	retorno = (outr.substring(1, outr.length()));
+            	break;
+            }
+            else {
+            	retorno = "";
+            }
         }
-        //@
-        char k = '@';
-        if (outr.charAt(0) == k) {
-        	return (outr.substring(1, outr.length()));
-        }
-        else {
-        	return "";
-        }
+        return retorno;
+        
+        
 		
 	}
 
@@ -165,7 +182,8 @@ public class Servidor extends Thread {
 			contador +=1;			
 			
 			if (pess.trim().equals((String) privado.trim())) {
-				msgPrivada = formaMsgSemArroba(linha);
+				//msgPrivada = formaMsgSemArroba(linha);
+				msgPrivada = linha;
 				chat.println(meuNome + acao + msgPrivada);
 				break;
 			}

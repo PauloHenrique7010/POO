@@ -1,3 +1,13 @@
+/*
+ * SISTEMA IRC
+ * GRUPO: LUCAS RIBEIRO, GABRIEL BRITO, PAULO HENRIQUE
+ * 3º ADS - B
+ * PROFESSOR: GERSON DA PENHA
+ * MATÉRIA: PROGRAMAÇÃO ORIENTADA A OBJETO 2019
+ */
+
+
+
 package conexoes;
 
 import java.io.*;
@@ -20,8 +30,8 @@ public class Cliente extends Thread {
 			// da aplicaï¿½ï¿½o ServidorDeChat. Nada impede a mudanï¿½a
 			// desses valores, tentando estabelecer uma conexï¿½o com
 			// outras portas em outras mï¿½quinas.
-			//Socket conexao = new Socket("127.0.0.1",1238);
 			Socket conexao = new Socket("127.0.0.1",2227);
+			//Socket conexao = new Socket("172.16.2.113",2227);
 
 			// uma vez estabelecida a comunicaï¿½ï¿½o, deve-se obter os
 			// objetos que permitem controlar o fluxo de comunicaï¿½ï¿½o
